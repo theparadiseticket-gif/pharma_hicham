@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinésithérapie - Rééducation Motrice & Respiratoire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800') center/cover;
+            height: 200px;
+            padding: 20px;
+            color: white;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h2 {
+            color: #2ecc71;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 25px 20px 100px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .section-title.bordered {
+            border-left: 3px solid #2ecc71;
+            padding-left: 12px;
+        }
+
+        .services-list {
+            list-style: none;
+        }
+
+        .services-list li {
+            padding: 10px 5px;
+            color: #4a5568;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 6px;
+        }
+
+        .services-list li:hover {
+            background-color: #f8f9fa;
+        }
+
+        .services-list li input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 1px;
+            accent-color: #2ecc71;
+        }
+
+        .services-list li label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .description {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .calculate-btn {
+            display: none;
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 20px auto;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .calculate-btn.show {
+            display: block;
+        }
+
+        .calculate-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .price-result {
+            display: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .price-result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .price-result h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .price-result .total-price {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .price-result p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .send-request-btn {
+            background-color: white;
+            color: #667eea;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .send-request-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #25D366;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
+            max-width: 540px;
+            width: calc(100% - 40px);
+            justify-content: center;
+        }
+
+        .whatsapp-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* Popup styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .popup {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+            padding-right: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2ecc71;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 8px;
+            border: 2px dashed #e0e0e0;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+            
+            .hero h2 {
+                font-size: 14px;
+            }
+
+            .popup {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <button class="close-btn">×</button>
+            <h1>Kinésithérapie</h1>
+            <h2>Rééducation Motrice & Respiratoire</h2>
+        </div>
+
+        <div class="content">
+            <h3 class="section-title bordered">À propos du service</h3>
+            <p class="description">
+                Kiné pédiatrique, rééducation post-AVC et fractures, kiné respiratoire (BPCO) et 
+                renforcement musculaire pour l'autonomie des séniors.
+            </p>
+
+            <h3 class="section-title">Ce que comprend le service</h3>
+            <ul class="services-list" id="servicesList">
+                <li>
+                    <input type="checkbox" id="service1" data-price="65" class="service-checkbox">
+                    <label for="service1">Kinésithérapie pour enfants et nourrissons (PC, troubles moteurs)</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service2" data-price="55" class="service-checkbox">
+                    <label for="service2">Rééducation post AVC</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service3" data-price="50" class="service-checkbox">
+                    <label for="service3">AVC</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service4" data-price="60" class="service-checkbox">
+                    <label for="service4">Rééducation après fractures et chirurgies orthopédiques</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service5" data-price="58" class="service-checkbox">
+                    <label for="service5">Kinésithérapie respiratoire (BPCO, enfants)</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service6" data-price="52" class="service-checkbox">
+                    <label for="service6">Kiné pour séniors (mobilité et équilibre)</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="service7" data-price="48" class="service-checkbox">
+                    <label for="service7">Renforcement musculaire et du dos</label>
+                </li>
+            </ul>
+
+            <button class="calculate-btn" id="calculateBtn">Calculer le prix</button>
+
+            <div class="price-result" id="priceResult">
+                <h3>Prix total estimé</h3>
+                <div class="total-price" id="totalPrice">0 €</div>
+                <p>Prix par séance</p>
+                <button class="send-request-btn" id="sendRequestBtn">Envoyer une demande</button>
+            </div>
+        </div>
+
+        <a href="https://wa.me/YOUR_PHONE_NUMBER" class="whatsapp-btn">
+            <svg class="whatsapp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Réserver via WhatsApp
+        </a>
+    </div>
+
+    <!-- Popup formulaire -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup">
+            <button class="popup-close" id="popupClose">×</button>
+            <h2>Demande de rendez-vous</h2>
+            <form id="requestForm">
+                <div class="form-group">
+                    <label for="nom">Nom *</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom *</label>
+                    <input type="text" id="prenom" name="prenom" required>
+                </div>
+                <div class="form-group">
+                    <label for="telephone">Téléphone *</label>
+                    <input type="tel" id="telephone" name="telephone" required>
+                </div>
+                <div class="form-group">
+                    <label for="commentaire">Commentaire</label>
+                    <textarea id="commentaire" name="commentaire" placeholder="Décrivez votre besoin..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="photo">Photo (si besoin)</label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                </div>
+                <button type="submit" class="submit-btn">Envoyer la demande</button>
+                <div class="success-message" id="successMessage">
+                    ✓ Votre demande a été envoyée avec succès !
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const checkboxes = document.querySelectorAll('.service-checkbox');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const priceResult = document.getElementById('priceResult');
+        const totalPrice = document.getElementById('totalPrice');
+        const sendRequestBtn = document.getElementById('sendRequestBtn');
+        const popupOverlay = document.getElementById('popupOverlay');
+        const popupClose = document.getElementById('popupClose');
+        const requestForm = document.getElementById('requestForm');
+        const successMessage = document.getElementById('successMessage');
+
+        // Afficher/cacher le bouton "Calculer le prix"
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                if (anyChecked) {
+                    calculateBtn.classList.add('show');
+                } else {
+                    calculateBtn.classList.remove('show');
+                    priceResult.classList.remove('show');
+                }
+            });
+        });
+
+        // Calculer et afficher le prix
+        calculateBtn.addEventListener('click', () => {
+            let total = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    total += parseInt(checkbox.dataset.price);
+                }
+            });
+            
+            totalPrice.textContent = total + ' €';
+            priceResult.classList.add('show');
+            
+            // Scroll vers le résultat
+            priceResult.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Ouvrir la popup
+        sendRequestBtn.addEventListener('click', () => {
+            popupOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Fermer la popup
+        popupClose.addEventListener('click', () => {
+            popupOverlay.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        popupOverlay.addEventListener('click', (e) => {
+            if (e.target === popupOverlay) {
+                popupOverlay.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Soumettre le formulaire
+        requestForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(requestForm);
+    const services = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.nextElementSibling.textContent)
+        .join('\n- ');
+    
+    // Construire le corps de l'issue
+    const issueBody = `
+## Nouvelle demande de rendez-vous
+
+**Nom :** ${formData.get('nom')}
+**Prénom :** ${formData.get('prenom')}
+**Téléphone :** ${formData.get('telephone')}
+**Prix total :** ${totalPrice.textContent}
+
+### Services sélectionnés
+- ${services}
+
+### Commentaire
+${formData.get('commentaire') || 'Aucun commentaire'}
+
+---
+*Soumis le ${new Date().toLocaleString('fr-FR')}*
+    `.trim();
+    
+    try {
+        const response = await fetch('https://api.github.com/repos/theparadiseticket-gif/pharma_hicham/issues', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer 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',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: `Demande: ${formData.get('nom')} ${formData.get('prenom')}`,
+                body: issueBody,
+                labels: ['demande-rdv']
+            })
+        });
+        
+        if (response.ok) {
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                requestForm.reset();
+                successMessage.classList.remove('show');
+                popupOverlay.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }, 2000);
+        } else {
+            alert('Erreur lors de l\'envoi. Veuillez réessayer.');
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur de connexion. Veuillez réessayer.');
+    }
+});
+
+
+        // Bouton fermer en haut
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
+
