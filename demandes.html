@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demandes de rendez-vous</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .requests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .request-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .request-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .request-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-open {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-closed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .request-info {
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .services-list {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .request-date {
+            font-size: 12px;
+            color: #999;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .error {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: #e74c3c;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .phone-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .phone-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .requests-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Demandes de rendez-vous</h1>
+            <button class="refresh-btn" onclick="loadRequests()">🔄 Actualiser</button>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Total des demandes</h3>
+                    <div class="number" id="totalRequests">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>En attente</h3>
+                    <div class="number" id="openRequests">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Traitées</h3>
+                    <div class="number" id="closedRequests">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading" class="loading">Chargement des demandes...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="requestsContainer" class="requests-grid"></div>
+    </div>
+
+    <script>
+        const GITHUB_TOKEN = 'TON_TOKEN_ICI'; // ← Remplace par ton token
+        const REPO_OWNER = 'theparadiseticket-gif';
+        const REPO_NAME = 'pharma_hicham';
+
+        async function loadRequests() {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const container = document.getElementById('requestsContainer');
+            
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            container.innerHTML = '';
+
+            try {
+                // Récupérer toutes les issues
+                const [openIssues, closedIssues] = await Promise.all([
+                    fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues?state=open&labels=demande-rdv&per_page=100`, {
+                        headers: {
+                            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                            'Accept': 'application/vnd.github+json'
+                        }
+                    }).then(r => r.json()),
+                    fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues?state=closed&labels=demande-rdv&per_page=100`, {
+                        headers: {
+                            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                            'Accept': 'application/vnd.github+json'
+                        }
+                    }).then(r => r.json())
+                ]);
+
+                const allIssues = [...openIssues, ...closedIssues].sort((a, b) => 
+                    new Date(b.created_at) - new Date(a.created_at)
+                );
+
+                // Mettre à jour les stats
+                document.getElementById('totalRequests').textContent = allIssues.length;
+                document.getElementById('openRequests').textContent = openIssues.length;
+                document.getElementById('closedRequests').textContent = closedIssues.length;
+
+                loading.style.display = 'none';
+
+                if (allIssues.length === 0) {
+                    container.innerHTML = '<div class="error">Aucune demande pour le moment</div>';
+                    return;
+                }
+
+                // Afficher chaque demande
+                allIssues.forEach(issue => {
+                    const card = createRequestCard(issue);
+                    container.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error('Erreur:', err);
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                error.textContent = '❌ Erreur lors du chargement. Veuillez réessayer.';
+            }
+        }
+
+        function createRequestCard(issue) {
+            const card = document.createElement('div');
+            card.className = 'request-card';
+
+            // Parser le contenu de l'issue
+            const body = issue.body || '';
+            const nom = extractInfo(body, 'Nom');
+            const prenom = extractInfo(body, 'Prénom');
+            const telephone = extractInfo(body, 'Téléphone');
+            const prixTotal = extractInfo(body, 'Prix total');
+            const commentaire = extractSection(body, 'Commentaire');
+            const services = extractSection(body, 'Services sélectionnés');
+
+            // Formatter le téléphone pour les liens
+            const telClean = telephone.replace(/\s/g, '');
+
+            card.innerHTML = `
+                <div class="request-header">
+                    <div class="request-title">${prenom} ${nom}</div>
+                    <span class="status-badge ${issue.state === 'open' ? 'status-open' : 'status-closed'}">
+                        ${issue.state === 'open' ? '⏳ En attente' : '✅ Traitée'}
+                    </span>
+                </div>
+                
+                <div class="request-info">
+                    <div class="info-row">
+                        <span class="info-label">Téléphone :</span>
+                        <span class="info-value">
+                            <a href="tel:${telClean}" class="phone-link">📞 ${telephone}</a>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Prix total :</span>
+                        <span class="info-value"><strong>${prixTotal}</strong></span>
+                    </div>
+                </div>
+
+                ${services ? `<div class="services-list"><strong>Services demandés :</strong><br>${services}</div>` : ''}
+                ${commentaire && commentaire !== 'Aucun commentaire' ? `<div class="services-list"><strong>Commentaire :</strong><br>${commentaire}</div>` : ''}
+
+                <div class="request-date">
+                    📅 Demande reçue le ${new Date(issue.created_at).toLocaleString('fr-FR')}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function extractInfo(text, label) {
+            const regex = new RegExp(`\\*\\*${label}\\s*:\\*\\*\\s*(.+)`, 'i');
+            const match = text.match(regex);
+            return match ? match[1].trim() : '-';
+        }
+
+        function extractSection(text, section) {
+            const regex = new RegExp(`###\\s*${section}\\s*\\n([\\s\\S]*?)(?=###|---|$)`, 'i');
+            const match = text.match(regex);
+            return match ? match[1].trim() : '';
+        }
+
+        // Charger les demandes au démarrage
+        loadRequests();
+
+        // Auto-refresh toutes les 30 secondes
+        setInterval(loadRequests, 30000);
+    </script>
+</body>
+</html>
